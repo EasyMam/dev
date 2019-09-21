@@ -18,13 +18,14 @@
 
       win.easymam.inFlight = true;
       try {
+          con &&
+            con.log &&
+            con.log("LOOP CONDITION MET - CALLING SERVER IN LOOP STARTS ...");
         serverCall(x => {
           win.easymam.result = x;
           resolve(win.easymam.result);
           if (loopCond && loopCond(x)) {
-            con &&
-              con.log &&
-              con.log("LOOP CONDITION MET - CALLING SERVER IN LOOP STARTS ...");
+            
             win.easymam(serverCall, loopCond, con, true);
           } else {
             win.easymam.inFlight = false;
