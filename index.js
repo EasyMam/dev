@@ -1,20 +1,30 @@
 (function(win) {
-  win.easymam = function(serverCall, loopCond, con, force) {
-       con && con.log && con.log("EASYMAM - NEW CALL RESULT : ...");
+  win.easymam = function(
+    serverCall,
+    loopCond,
+    callBackSuccessOnLast,
+    callBackErrorOnLast,
+    con,
+    force
+  ) {
+    con && con.log && con.log("EASYMAM - NEW CALL RESULT : ...");
     return new Promise(function(resolve, reject) {
       if (!serverCall) {
+        try {
+          callBackErrorOnLast();
+        } catch (err) {}
         reject();
         return;
       }
 
       if (!force && win.easymam.inFlight) {
-     
-        if (win.easymam.result) {  
-             con && con.log && con.log("EASYMAM - RETURNING STORED RESULT : ...");
+        if (win.easymam.result) {
+          con && con.log && con.log("EASYMAM - RETURNING STORED RESULT : ...");
+          callBackSuccessOnLast(win.easymam.result);
           resolve(win.easymam.result);
-        return;
+          return;
         } else {
-             con && con.log && con.log("EASYMAM - NO STORED RESULT TO RETURN ...");
+          con && con.log && con.log("EASYMAM - NO STORED RESULT TO RETURN ...");
         }
       }
       if (!force && win.easymam.inFlight && win.easymam.result) {
@@ -28,18 +38,27 @@
             );
           serverCall(x => {
             win.easymam.result = x;
-            
             var canCallAgain = loopCond && loopCond(x);
             if (canCallAgain) {
-              win.easymam(serverCall, loopCond, con, true);
+              win.easymam(serverCall,
+    loopCond,
+    callBackSuccessOnLast,
+    callBackErrorOnLast,
+    con, true);
             } else {
               win.easymam.inFlight = false;
-            }resolve(win.easymam.result);
+            }
+            callBackSuccessOnLast(win.easymam.result);
+            resolve(win.easymam.result);
             return;
           });
         } catch (error) {
           con && con.log && con.log("EASYMAM - SERVER ERROR...");
           win.easymam.inFlight = false;
+
+          try {
+            callBackErrorOnLast(error);
+          } catch (err) {}
           reject(error);
           return;
         }
