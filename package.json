@@ -1,0 +1,22 @@
+{
+  "name": "easymam",
+  "version": "1.0.0",
+  "description": "For easy Mamoization",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EasyMam/dev.git"
+  },
+  "keywords": [
+    "mamoization"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EasyMam/dev/issues"
+  },
+  "homepage": "https://github.com/EasyMam/dev#readme"
+}
