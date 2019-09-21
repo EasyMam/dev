@@ -4,6 +4,7 @@
     loopCond,
     callBackSuccessOnLast,
     callBackErrorOnLast,
+    minWaitMillisecondsBetweenCalls,
     con,
     force
   ) {
@@ -30,38 +31,46 @@
       if (!force && win.easymam.inFlight && win.easymam.result) {
       } else {
         win.easymam.inFlight = true;
-        try {
-          con &&
-            con.log &&
-            con.log(
-              "EASYMAM - LOOP CONDITION MET - CALLING SERVER IN LOOP STARTS ..."
-            );
-          serverCall(x => {
-            win.easymam.result = x;
-            var canCallAgain = loopCond && loopCond(x);
-            if (canCallAgain) {
-              win.easymam(serverCall,
-    loopCond,
-    callBackSuccessOnLast,
-    callBackErrorOnLast,
-    con, true);
-            } else {
-              win.easymam.inFlight = false;
-            }
-            callBackSuccessOnLast(win.easymam.result);
-            resolve(win.easymam.result);
-            return;
-          });
-        } catch (error) {
-          con && con.log && con.log("EASYMAM - SERVER ERROR...");
-          win.easymam.inFlight = false;
-
+        setTimeout(() => {
           try {
-            callBackErrorOnLast(error);
-          } catch (err) {}
-          reject(error);
-          return;
-        }
+            con &&
+              con.log &&
+              con.log("EASYMAM - LOOP CONDITION MET - CALLING SERVER NOW ...");
+            serverCall(x => {
+              win.easymam.result = x;
+              var canCallAgain = loopCond && loopCond(x);
+              if (canCallAgain) {
+                con &&
+                  con.log &&
+                  con.log(
+                    "EASYMAM - LOOP CONDITION MET - CALLING SERVER IN LOOP STARTS ..."
+                  );
+                win.easymam(
+                  serverCall,
+                  loopCond,
+                  callBackSuccessOnLast,
+                  callBackErrorOnLast,
+                  con,
+                  true
+                );
+              } else {
+                win.easymam.inFlight = false;
+              }
+              callBackSuccessOnLast(win.easymam.result);
+              resolve(win.easymam.result);
+              return;
+            });
+          } catch (error) {
+            con && con.log && con.log("EASYMAM - SERVER ERROR...");
+            win.easymam.inFlight = false;
+
+            try {
+              callBackErrorOnLast(error);
+            } catch (err) {}
+            reject(error);
+            return;
+          }
+        }, minWaitMillisecondsBetweenCalls || 0);
       }
     });
   };
