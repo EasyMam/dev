@@ -32,7 +32,9 @@
         });
       } catch (error) {
         con && con.log && con.log("SERVER ERROR...");
+          win.easymam.inFlight = false;
         reject(error);
+
       }
     });
   };
