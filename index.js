@@ -9,8 +9,9 @@
   win.easymam = function(
     serverCall,
     loopCond,
-    callBackSuccessOnLast,
+    callBackSuccess,
     callBackErrorOnLast,
+    callBackSuccessOnExit,
     minWaitMillisecondsBetweenCalls,
     con,
     force
@@ -28,7 +29,7 @@
       if (!force && win.easymam.inFlight) {
         if (win.easymam.result) {
           con && con.log && con.log("EASYMAM - RETURNING STORED RESULT : ...");
-          callBackSuccessOnLast(win.easymam.result);
+          callBackSuccess(win.easymam.result);
           resolve(win.easymam.result);
           return;
         } else {
@@ -55,15 +56,20 @@
                 win.easymam(
                   serverCall,
                   loopCond,
-                  callBackSuccessOnLast,
+                  callBackSuccess,
                   callBackErrorOnLast,
+                  callBackSuccessOnExit,
                   con,
                   true
                 );
               } else {
                 win.easymam.inFlight = false;
+                  if (force) {
+                    callBackSuccessOnExit(win.easymam.result);
+                  }
               }
-              callBackSuccessOnLast(win.easymam.result);
+              callBackSuccess(win.easymam.result);
+            
               resolve(win.easymam.result);
               return;
             });
