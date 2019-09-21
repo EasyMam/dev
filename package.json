@@ -1,6 +1,6 @@
 {
   "name": "easymam",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "For easy Mamoization",
   "main": "index.js",
   "scripts": {
