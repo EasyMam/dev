@@ -40,7 +40,7 @@
         win.easymam.inFlight = true;
        // setTimeout(() => {
           try {
-            con &&
+            con && 
               con.log &&
               con.log("EASYMAM - LOOP CONDITION MET - CALLING SERVER NOW ...");
             serverCall(x => {
