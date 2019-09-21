@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <button id="myBtn">Try it</button>
+  <script src="https://unpkg.com/easymam@3.0.0/index.js"></script>
+    
+    <script>
+      var proc = 0;
+      var server = function(f) {
+        console.log("server received a new call : ...");
+        setTimeout(() => {
+          console.log("server responding now : ...");
+          proc++;
+          f &&
+            f({
+              processing: proc % 3 == 0,
+              data: new Date()
+            });
+        }, 5000);
+      };
+    </script>
+    <script>
+      document.getElementById("myBtn").addEventListener("click", async x => {
+        var x = await window.easymam(server, x => x.processing, console);
+        console.log("MAIN RESULT : ...");
+        console.log(x);
+      });
+    </script>
+  </body>
+</html>
