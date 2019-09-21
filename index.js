@@ -31,7 +31,7 @@
           }
         });
       } catch (error) {
-        con.log("SERVER ERROR...");
+        con && con.log && con.log("SERVER ERROR...");
         reject(error);
       }
     });
