@@ -1,3 +1,10 @@
+/**
+ * Adds two numbers together
+ * 
+ * @param {number} first The First Number
+ * @param {number} second The Second Number
+ * @returns {number}
+ */
 (function(win) {
   win.easymam = function(
     serverCall,
@@ -31,7 +38,7 @@
       if (!force && win.easymam.inFlight && win.easymam.result) {
       } else {
         win.easymam.inFlight = true;
-        setTimeout(() => {
+       // setTimeout(() => {
           try {
             con &&
               con.log &&
@@ -70,7 +77,7 @@
             reject(error);
             return;
           }
-        }, minWaitMillisecondsBetweenCalls || 0);
+        //}, minWaitMillisecondsBetweenCalls || 0);
       }
     });
   };
