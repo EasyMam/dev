@@ -2,6 +2,7 @@
 <html>
   <body>
     <button id="myBtn">Try it</button>
+    <button id="myBtn2">Try it 2</button>
     <script src="index.js"></script>
     <script>
       var proc = 0;
@@ -15,6 +16,42 @@
           });
         }, 1000);
       };
+    </script>
+    <script>
+      document.getElementById("myBtn2").addEventListener("click", async x => {
+        var optionsx = {
+          loopCond: function(x) {
+            return x.processing;
+          },
+          callBackSuccess: function() {
+            console.info("SUCCESS CALLBACK : ...");
+          },
+          callBackErrorOnLast: function() {
+            console.warn("ERROR CALLBACK : ...");
+          },
+          callBackSuccessOnExit: function(x) {
+            console.info("AFTER LOOP MAIN RESULT  : ...");
+          },
+          minWaitBetweenCalls: 10000,
+          defaultResult: "default result",
+          console: console,
+          //allowAllInitialCallsToPass: true
+        };
+
+        console.info("CALLING EASYMAM  : ...");
+
+        var x = await window.easymam("context name 2").execute(async () => {
+          await window.easymam().wait(2000);
+          console.warn("server ...");
+          return {
+            processing: ++proc % 3 == 0,
+            data: new Date().getTime()
+          };
+        }, optionsx);
+
+        console.info("MAIN RESULT : ...");
+        console.info(x);
+      });
     </script>
     <script>
       document.getElementById("myBtn").addEventListener("click", async x => {

@@ -21,6 +21,7 @@ var easymam = (function() {
     options.callBackErrorOnLast = options.callBackErrorOnLast || noop;
     options.callBackSuccessOnExit = options.callBackSuccessOnExit || noop;
     options.onReturnFromCache = options.onReturnFromCache || noop;
+    options.allowAllInitialCallsToPass = options.allowAllInitialCallsToPass || true;
     options.minWaitBetweenCalls = options.minWaitBetweenCalls || 0;
     options.console = options.console || { log: function() {} };
     return options;
@@ -57,116 +58,131 @@ var easymam = (function() {
             reject();
             return;
           }else{
-                var seconds = new Date() - hanger.cache[context].lastCallAt;
-                var pastLastCallPeriod =
-                  !hanger.cache[context].hasRunAtLeastOnce ||
-                  seconds > options.minWaitBetweenCalls;
+                 var seconds = new Date() - hanger.cache[context].lastCallAt;
+                 var pastLastCallPeriod =
+                   !hanger.cache[context].hasRunAtLeastOnce ||
+                   seconds > options.minWaitBetweenCalls;
 
-                var sinature =
-                  "CONTEXT : " +
-                  context +
-                  " - FORCE :" +
-                  force +
-                  " - CALL COUNT :" +
-                  callCount +
-                  " - LAST RUN AGO(ms): " +
-                  seconds +
-                  " - PASSED WAIT TIME : " +
-                  pastLastCallPeriod;
+                 var sinature =
+                   "CONTEXT : " +
+                   context +
+                   " - FORCE :" +
+                   force +
+                   " - CALL COUNT :" +
+                   callCount +
+                   " - LAST RUN AGO(ms): " +
+                   seconds +
+                   " - PASSED WAIT TIME : " +
+                   pastLastCallPeriod;
 
-                if (pastLastCallPeriod) {
-                  options.console.log(
-                    "EASYMAM - WAIT TIME OVER ! ..." + sinature
-                  );
-                  hanger.cache[context].lastCallAt = new Date();
-                } else {
-                  options.console.log(
-                    "EASYMAM -STILL WAITING FOR THE WAIT TIME TO BE OVER. SO FAR..." +
-                      sinature
-                  );
-                }
-                hanger.cache[context].hasRunAtLeastOnce = true;
+                 if (pastLastCallPeriod) {
+                   options.console.log(
+                     "EASYMAM - WAIT TIME OVER ! ..." + sinature
+                   );
+                   hanger.cache[context].lastCallAt = new Date();
+                 } else {
+                   options.console.log(
+                     "EASYMAM -STILL WAITING FOR THE WAIT TIME TO BE OVER. SO FAR..." +
+                       sinature
+                   );
+                 }
 
-                if (
-                  (!force && hanger.cache[context].inFlight) ||
-                  !pastLastCallPeriod
-                ) {
-                  if (hanger.cache[context].result) {
-                    options.console.log(
-                      "EASYMAM - RETURNING RESULT ..." + sinature
-                    );
-                    options.onReturnFromCache({
-                      data: hanger.cache[context].result,
-                      context: context,
-                      inLoop: force,
-                      position: callCount,
-                      secondsPast: seconds,
-                      pastLastCallPeriod: pastLastCallPeriod
-                    });
-                    options.callBackSuccess(hanger.cache[context].result);
-                    hanger.cache[context].isPending = true;
-                    resolve(hanger.cache[context].result);
-                    return;
-                  } else {
-                    options.console.log("EASYMAM - NO STORED ..." + sinature);
-                    resolve(options.defaultResult);
-                    return;
-                  }
-                } else {
-                  hanger.cache[context].inFlight = true;
-                  hanger.cache[context].isPending = false;
-                  try {
-                    options.console.log("EASYMAM - CALLING FUN ..." + sinature);
-                    var x = await serviceMethod();
-                    hanger.cache[context].result = x;
-                    if (hanger.cache[context].isPending) {
-                      options.console.log(
-                        "EASYMAM - THERE WAS A PENDING CALL SO I WILL MAKE ONE LAST CALL ..." +
-                          sinature
-                      );
-                    }
-                    var canCallAgain =
-                      hanger.cache[context].isPending || options.loopCond(x);
-                    if (canCallAgain) {
-                      options.console.log(
-                        "EASYMAM - LOOP CONDITION MET " + callCount
-                      );
-                      try {
-                        app[context].execute(
-                          serviceMethod,
-                          options,
-                          callCount + 1,
-                          true
-                        );
-                      } catch (error) {
-                        //TODO : SOMETIME app BECONEs not defined. not sure why yet. catching it for now
-                        options.callBackSuccessOnExit(
-                          hanger.cache[context].result
-                        );
-                        hanger.cache[context].inFlight = false;
-                      }
-                    } else {
-                      hanger.cache[context].inFlight = false;
-                      if (force) {
-                        options.callBackSuccessOnExit(
-                          hanger.cache[context].result
-                        );
-                      }
-                    }
-                    options.callBackSuccess(hanger.cache[context].result);
-                    resolve(hanger.cache[context].result);
-                    return;
-                  } catch (error) {
-                    options.console.log("EASYMAM - SERVER ERROR..." + sinature);
-                    hanger.cache[context].inFlight = false;
-                    try {
-                      options.callBackErrorOnLast(error);
-                    } catch (err) {}
-                    reject(error);
-                    return;
-                  }
-                }
-          }
+                 /*
+                 ||
+                  
+                */
+               var firstTime =
+                 options.allowAllInitialCallsToPass &&
+                 !hanger.cache[context].hasExecutedAtLeastOnce;
+                 if (!firstTime &&
+                  ( (!force && hanger.cache[context].inFlight) ||
+                   !pastLastCallPeriod)
+                 ) {
+                   hanger.cache[context].hasRunAtLeastOnce = true;
+                   if (hanger.cache[context].result) {
+                     options.console.log(
+                       "EASYMAM - RETURNING RESULT ..." + sinature
+                     );
+                     options.onReturnFromCache({
+                       data: hanger.cache[context].result,
+                       context: context,
+                       inLoop: force,
+                       position: callCount,
+                       secondsPast: seconds,
+                       pastLastCallPeriod: pastLastCallPeriod
+                     });
+                     options.callBackSuccess(hanger.cache[context].result);
+                     hanger.cache[context].isPending = true;
+                     resolve(hanger.cache[context].result);
+                     return;
+                   } else {
+                     options.console.log("EASYMAM - NO STORED ..." + sinature);
+                     resolve(options.defaultResult);
+                     return;
+                   }
+                 } else {
+                   hanger.cache[context].hasRunAtLeastOnce = true;
+                   hanger.cache[context].inFlight = true;
+                   hanger.cache[context].isPending = false;
+                   try {
+                     options.console.log(
+                       "EASYMAM - CALLING FUN ..." + sinature
+                     );
+                     var x = await serviceMethod();
+                     hanger.cache[context].hasExecutedAtLeastOnce = true;
+                     hanger.cache[context].result = x;
+                     if (hanger.cache[context].isPending) {
+                       options.console.log(
+                         "EASYMAM - THERE WAS A PENDING CALL SO I WILL MAKE ONE LAST CALL ..." +
+                           sinature
+                       );
+                     }
+                     var canCallAgain =
+                       hanger.cache[context].isPending || options.loopCond(x);
+                     if (canCallAgain) {
+                       options.console.log(
+                         "EASYMAM - LOOP CONDITION MET " + callCount
+                       );
+                       try {
+                         app[context].execute(
+                           serviceMethod,
+                           options,
+                           callCount + 1,
+                           true
+                         );
+                       } catch (error) {
+                         //TODO : SOMETIME app BECONEs not defined. not sure why yet. catching it for now
+                         options.callBackSuccessOnExit(
+                           hanger.cache[context].result
+                         );
+                         hanger.cache[context].inFlight = false;
+                       }
+                     } else {
+                       hanger.cache[context].inFlight = false;
+                       if (force) {
+                         options.callBackSuccessOnExit(
+                           hanger.cache[context].result
+                         );
+                       }
+                     }
+                     options.callBackSuccess(hanger.cache[context].result);
+                     resolve(hanger.cache[context].result);
+                     return;
+                   } catch (error) {
+                     hanger.cache[context].hasExecutedAtLeastOnce = true;
+                     hanger.cache[context].hasFailedAtLeastOnce = true;
+                     options.console.log(
+                       "EASYMAM - SERVER ERROR..." + sinature
+                     );
+                     hanger.cache[context].inFlight = false;
+                     try {
+                       options.callBackErrorOnLast(error);
+                     } catch (err) {}
+                     reject(error);
+                     return;
+                   }
+                 }
+               }
 
         
         });
