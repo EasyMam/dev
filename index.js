@@ -165,7 +165,6 @@ var easymam = (function() {
                     reject(error);
                     return;
                   }
-                  //}, options.minWaitBetweenCalls || 0);
                 }
           }
 
