@@ -1,7 +1,7 @@
 
   EasyMam - For easy strategic Memoization & Throttling
 
-  [![npm version](https://badge.fury.io/js/easymam.svg)](https://badge.fury.io/js/signalx)
+  [![npm version](https://badge.fury.io/js/easymam.svg)](https://badge.fury.io/js/easymam)
  
   A simple Memoization & Throttling Library for use in Web UI & NodeJS environment
   It allows only one call to be made to your service at any given time
