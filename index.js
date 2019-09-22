@@ -145,13 +145,14 @@ var easymam = (function() {
                          "EASYMAM - LOOP CONDITION MET " + callCount
                        );
                        try {
-                         app[context].execute(
+                         easymam(context).execute(
                            serviceMethod,
                            options,
                            callCount + 1,
                            true
                          );
                        } catch (error) {
+                         console.warn(error);
                          //TODO : SOMETIME app BECONEs not defined. not sure why yet. catching it for now
                          options.callBackSuccessOnExit(
                            hanger.cache[context].result
