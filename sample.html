@@ -37,9 +37,8 @@
         };
         for (let index2 = 0; index2 < 10; index2++) {
           console.info("CALLING EASYMAM " + index2 + " : ...");
-          var handle = window.easymam("context name 2");
-
-          var x = await handle.execute(async () => {            
+         
+          var x = await window.easymam("context name 2").execute(async () => {            
             await window.easymam().wait(2000);            
             return {
               processing: ++proc % 3 == 0,

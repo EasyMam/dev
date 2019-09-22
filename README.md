@@ -1,5 +1,5 @@
 
-  EasyMam - Your Easy strategic Memoization & Throttling
+  EasyMam - For easy strategic Memoization & Throttling
  
   A simple Memoization & Throttling Library for use in Web UI & NodeJS environment
   It allows only one call to be made to your service at any given time
@@ -25,3 +25,16 @@
           - or you are still within you set min wait time
  
  
+ ```
+            var option = { minWaitBetweenCalls : 2000 };
+
+            var x = await window.easymam("any name for your context")
+            
+            .execute(async () => {  
+
+              return return "Service response";
+
+            },option);
+
+            console.info(x);
+ ```

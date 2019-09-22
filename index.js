@@ -20,7 +20,7 @@ var easymam = (function() {
     options.callBackSuccess = options.callBackSuccess || noop;
     options.callBackErrorOnLast = options.callBackErrorOnLast || noop;
     options.callBackSuccessOnExit = options.callBackSuccessOnExit || noop;
-    options.minWaitBetweenCalls = options.minWaitBetweenCalls || noop;
+    options.minWaitBetweenCalls = options.minWaitBetweenCalls || 0;
     options.console = options.console || { log: function() {} };
     return options;
   }
