@@ -145,12 +145,12 @@ var easymam = (function() {
                          "EASYMAM - LOOP CONDITION MET " + callCount
                        );
                        try {
-                         easymam(context).execute(
-                           serviceMethod,
-                           options,
-                           callCount + 1,
-                           true
-                         );
+                       await easymam(context).execute(
+                         serviceMethod,
+                         options,
+                         true,
+                         callCount + 1
+                       );
                        } catch (error) {
                          console.warn(error);
                          //TODO : SOMETIME app BECONEs not defined. not sure why yet. catching it for now
