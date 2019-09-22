@@ -42,4 +42,6 @@
  ```
 
 You can find the sequence test here https://github.com/EasyMam/dev/blob/master/tests.js
+
+
 And run the sample here https://github.com/EasyMam/dev/blob/master/sample.html
