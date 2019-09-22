@@ -2,28 +2,45 @@
 <html>
   <body>
     <button id="myBtn">Try it</button>
-  <script src="https://unpkg.com/easymam@3.0.0/index.js"></script>
-    
+    <script src="index.js"></script>
     <script>
       var proc = 0;
       var server = function(f) {
-        console.log("server received a new call : ...");
+        console.log("Server processing request ...");
         setTimeout(() => {
-          console.log("server responding now : ...");
-          proc++;
-          f &&
+          console.log("server responding now ...");
             f({
-              processing: proc % 3 == 0,
-              data: new Date()
+              processing: ++proc % 3 == 0,
+              data:( new Date()).getTime()
             });
-        }, 5000);
+        }, 1000);
       };
     </script>
     <script>
       document.getElementById("myBtn").addEventListener("click", async x => {
-        var x = await window.easymam(server, x => x.processing, console);
-        console.log("MAIN RESULT : ...");
-        console.log(x);
+        var options = {
+          loopCond :function(x) {
+            return x.processing;
+          },
+          callBackSuccess: function() {
+           console.info("SUCCESS CALLBACK : ...");
+          },
+          callBackErrorOnLast: function() {
+            console.warn("ERROR CALLBACK : ...");
+          },
+          callBackSuccessOnExit: function(x) {
+             console.info("AFTER LOOP MAIN RESULT  : ...");
+          },
+          minWaitBetweenCalls: 10000,
+          defaultResult:"default result",
+          console: console
+        };
+        for (let index = 0; index < 10; index++) {
+            console.info("CALLING EASYMAM "+index+" : ...");
+            var x = await window.easymam("context name").execute(server, options);
+            console.info("MAIN RESULT : ...");
+            console.info(x);          
+        }      
       });
     </script>
   </body>

@@ -18,5 +18,6 @@
   "bugs": {
     "url": "https://github.com/EasyMam/dev/issues"
   },
-  "homepage": "https://github.com/EasyMam/dev#readme"
+  "homepage": "https://github.com/EasyMam/dev#readme",
+  "devDependencies": {}
 }
