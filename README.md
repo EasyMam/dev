@@ -1,5 +1,7 @@
 
   EasyMam - For easy strategic Memoization & Throttling
+
+  [![npm version](https://badge.fury.io/js/easymam.svg)](https://badge.fury.io/js/signalx)
  
   A simple Memoization & Throttling Library for use in Web UI & NodeJS environment
   It allows only one call to be made to your service at any given time
@@ -29,7 +31,7 @@
             var option = { minWaitBetweenCalls : 2000 };
 
             var x = await window.easymam("any name for your context")
-            
+
             .execute(async () => {  
 
               return return "Service response";
@@ -38,3 +40,5 @@
 
             console.info(x);
  ```
+
+You can find the sequence test here https://github.com/EasyMam/dev/blob/master/tests.js
