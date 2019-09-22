@@ -7,7 +7,7 @@ QUnit.test("Read Me sample ran well", async assert => {
   );
   console.info(x);
 
-  assert.ok(true, "Read Me sample ran well");
+  assert.ok(x = "Service response", "Read Me sample ran well");
 });
 
 QUnit.test("Single initial call", async assert => {
