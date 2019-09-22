@@ -176,5 +176,5 @@ var easymam = (function() {
   return app;
 })();
 if (typeof module === "object" && typeof module.exports === "object") {
-  module.exports = { easymam: easymam };
+  module.exports = easymam;
 }
