@@ -28,7 +28,10 @@
  
  
  ```
-            var option = { minWaitBetweenCalls : 2000 };
+            var option = { 
+                minWaitBetweenCalls : 2000 , 
+                onReturnFromCache : function(d){ console.log(d);} 
+                };
 
             var x = await window.easymam("any name for your context")
 
