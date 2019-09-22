@@ -1,6 +1,6 @@
 /*
   EasyMam - Your Easy strategic Memoization & Throttling
- 
+
   A simple Memoization & Throttling Library for use in Web UI & NodeJS environment
   It allows only one call to be made to your service at any given time
   and within your set min time
@@ -114,7 +114,17 @@ var easymam = (function() {
                      });
                      options.callBackSuccess(hanger.cache[context].result);
                      hanger.cache[context].isPending = true;
-                     resolve(hanger.cache[context].result);
+
+                      if (options.loopCond(hanger.cache[context].result)) {
+                      await easymam(context).wait(options.minWaitBetweenCalls);
+                        easymam(context).execute(
+                          serviceMethod,
+                          options,
+                          true,
+                          callCount + 1
+                        );
+                      }
+                        resolve(hanger.cache[context].result);
                      return;
                    } else {
                      options.console.log("EASYMAM - NO STORED ..." + sinature);
@@ -145,7 +155,8 @@ var easymam = (function() {
                          "EASYMAM - LOOP CONDITION MET " + callCount
                        );
                        try {
-                       await easymam(context).execute(
+                        await easymam(context).wait(options.minWaitBetweenCalls);
+                        easymam(context).execute(
                          serviceMethod,
                          options,
                          true,
