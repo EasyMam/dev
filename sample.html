@@ -5,42 +5,59 @@
     <script src="index.js"></script>
     <script>
       var proc = 0;
-      var server = function(f) {
+      var server = function(resolve) {
         console.log("Server processing request ...");
         setTimeout(() => {
           console.log("server responding now ...");
-            f({
-              processing: ++proc % 3 == 0,
-              data:( new Date()).getTime()
-            });
+          resolve({
+            processing: ++proc % 3 == 0,
+            data: new Date().getTime()
+          });
         }, 1000);
       };
     </script>
     <script>
       document.getElementById("myBtn").addEventListener("click", async x => {
         var options = {
-          loopCond :function(x) {
+          loopCond: function(x) {
             return x.processing;
           },
           callBackSuccess: function() {
-           console.info("SUCCESS CALLBACK : ...");
+            console.info("SUCCESS CALLBACK : ...");
           },
           callBackErrorOnLast: function() {
             console.warn("ERROR CALLBACK : ...");
           },
           callBackSuccessOnExit: function(x) {
-             console.info("AFTER LOOP MAIN RESULT  : ...");
+            console.info("AFTER LOOP MAIN RESULT  : ...");
           },
           minWaitBetweenCalls: 10000,
-          defaultResult:"default result",
+          defaultResult: "default result",
           console: console
         };
+        for (let index2 = 0; index2 < 10; index2++) {
+          console.info("CALLING EASYMAM " + index2 + " : ...");
+          var handle = window.easymam("context name 2");
+
+          var x = await handle.execute(async () => {            
+            await window.easymam().wait(2000);            
+            return {
+              processing: ++proc % 3 == 0,
+              data: new Date().getTime()
+            };
+          }, options);
+
+          console.info("MAIN RESULT : ...");
+          console.info(x);
+        }
         for (let index = 0; index < 10; index++) {
-            console.info("CALLING EASYMAM "+index+" : ...");
-            var x = await window.easymam("context name").execute(server, options);
-            console.info("MAIN RESULT : ...");
-            console.info(x);          
-        }      
+          console.info("CALLING EASYMAM " + index + " : ...");
+          var handle = window.easymam("context name");
+          var x = await handle.execute(handle.promisify(server), options);
+          console.info("MAIN RESULT : ...");
+          console.info(x);
+        }
+
       });
     </script>
   </body>
