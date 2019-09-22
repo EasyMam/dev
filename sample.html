@@ -37,9 +37,9 @@
         };
         for (let index2 = 0; index2 < 10; index2++) {
           console.info("CALLING EASYMAM " + index2 + " : ...");
-         
-          var x = await window.easymam("context name 2").execute(async () => {            
-            await window.easymam().wait(2000);            
+
+          var x = await window.easymam("context name 2").execute(async () => {
+            await window.easymam().wait(2000);
             return {
               processing: ++proc % 3 == 0,
               data: new Date().getTime()
@@ -52,11 +52,14 @@
         for (let index = 0; index < 10; index++) {
           console.info("CALLING EASYMAM " + index + " : ...");
           var handle = window.easymam("context name");
+          options.onReturnFromCache = function(o) {
+            console.info("*********** RETURNING FROM CACHE : ...");
+            console.log(o);
+          };
           var x = await handle.execute(handle.promisify(server), options);
           console.info("MAIN RESULT : ...");
           console.info(x);
         }
-
       });
     </script>
   </body>

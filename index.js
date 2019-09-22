@@ -20,6 +20,7 @@ var easymam = (function() {
     options.callBackSuccess = options.callBackSuccess || noop;
     options.callBackErrorOnLast = options.callBackErrorOnLast || noop;
     options.callBackSuccessOnExit = options.callBackSuccessOnExit || noop;
+    options.onReturnFromCache = options.onReturnFromCache || noop;
     options.minWaitBetweenCalls = options.minWaitBetweenCalls || 0;
     options.console = options.console || { log: function() {} };
     return options;
@@ -94,6 +95,14 @@ var easymam = (function() {
                     options.console.log(
                       "EASYMAM - RETURNING RESULT ..." + sinature
                     );
+                    options.onReturnFromCache({
+                      data: hanger.cache[context].result,
+                      context: context,
+                      inLoop: force,
+                      position: callCount,
+                      secondsPast: seconds,
+                      pastLastCallPeriod: pastLastCallPeriod
+                    });
                     options.callBackSuccess(hanger.cache[context].result);
                     hanger.cache[context].isPending = true;
                     resolve(hanger.cache[context].result);
