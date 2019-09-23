@@ -1,3 +1,37 @@
+
+
+QUnit.test("returning non async 2", async assert => {
+
+  assert.ok(await $easymam(() => 8888) == 8888, "can accept non async 2");
+
+});
+
+QUnit.test("returning non async", async assert => {
+  
+  var x = await $easymam(() => {
+      return 8888;
+    }); 
+
+  assert.ok(x == 8888, "can accept non async");
+});
+
+QUnit.test("Simple Calculations 1", async assert => {
+  
+  var x = await $easymam( async () => {
+      return "Service response";
+    }); 
+
+  assert.ok(x == "Service response", "Read Me sample ran well");
+});
+
+QUnit.test("Simple Calculations 2", async assert => {
+  var expected = Math.pow(4, 3);
+  var x = await $easymam( async () => {
+      return Math.pow(4, 3);
+    });
+  assert.ok(expected==x, "");
+});
+
 QUnit.test("Read Me sample ran well", async assert => {
   var x = await window.easymam("any name for your context").execute(
     async () => {
@@ -5,10 +39,10 @@ QUnit.test("Read Me sample ran well", async assert => {
     },
     { minWaitBetweenCalls: 2000 }
   );
-  
+
   console.info(x); 
 
-  assert.ok(x = "Service response", "Read Me sample ran well");
+  assert.ok(x == "Service response", "Read Me sample ran well");
 });
 
 QUnit.test("Single initial call", async assert => {

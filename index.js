@@ -12,6 +12,9 @@ var easymam = (function() {
   if (typeof easymam === "object") {
     throw "easymam lib already defined / included";
   }
+  if (typeof $easymam === "object") {
+    throw "$easymam lib already defined / included";
+  }
   var hanger = {};
   var noop = function() {};
   function mergeOptions(options) {
@@ -27,9 +30,15 @@ var easymam = (function() {
     options.console = options.console || { log: function() {} };
     return options;
   }
+  function guid() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
   var app = function(context) {
-    context = context || "main";
+    context = context || guid();
     return {
+      newGuid:guid,
       promisify: function(f) {
         return function(){
             return new Promise(function(resolve, reject) {
@@ -202,8 +211,12 @@ var easymam = (function() {
       }
     };
   };
+  
   return app;
 })();
+var $easymam = function(f,opt,context){
+ return easymam(context).execute(f,opt);
+};
 if (typeof module === "object" && typeof module.exports === "object") {
   module.exports = easymam;
 }
