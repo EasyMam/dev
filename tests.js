@@ -5,7 +5,8 @@ QUnit.test("Read Me sample ran well", async assert => {
     },
     { minWaitBetweenCalls: 2000 }
   );
-  console.info(x);
+  
+  console.info(x); 
 
   assert.ok(x = "Service response", "Read Me sample ran well");
 });
