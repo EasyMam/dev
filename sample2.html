@@ -12,35 +12,8 @@
     ></script>
     <script src="https://unpkg.com/easymam"></script>
 
-    <script>
-      var monitor = (function() {
-        return {
-          run: async function(opt) {
-            var options = {
-              loopCond: function(x) {
-                return true;
-              },
-              callBackErrorOnLast: function() {},
-              callBackSuccess: function(data) {
-                opt.onSuccess && opt.onSuccess(data);
-              },
-              minWaitBetweenCalls: opt.interval
-            };
+    <script src="monitor.js"></script>
 
-            var handle = easymam();
-            //chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
-            await handle.execute(
-              handle.promisify(resolve => {
-                $.get(opt.url, function(data) {
-                  resolve(data);
-                });
-              }),
-              options
-            );
-          }
-        };
-      })();
-    </script>
     <script>
       document.getElementById("myBtn").addEventListener("click", async x => {
         await monitor.run({
