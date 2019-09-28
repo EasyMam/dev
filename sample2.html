@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="log">
+      <button id="myBtn">Start logging</button>
+    </div>
+    <pre id="pan"></pre>
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/easymam"></script>
+
+    <script>
+      var monitor = (function() {
+        return {
+          run: async function(opt) {
+            var options = {
+              loopCond: function(x) {
+                return true;
+              },
+              callBackErrorOnLast: function() {},
+              callBackSuccess: function(data) {
+                opt.onSuccess && opt.onSuccess(data);
+              },
+              minWaitBetweenCalls: opt.interval
+            };
+
+            var handle = easymam();
+            //chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
+            await handle.execute(
+              handle.promisify(resolve => {
+                $.get(opt.url, function(data) {
+                  resolve(data);
+                });
+              }),
+              options
+            );
+          }
+        };
+      })();
+    </script>
+    <script>
+      document.getElementById("myBtn").addEventListener("click", async x => {
+        await monitor.run({
+          interval: 1000,
+          url: "http://www.google.com",
+          onSuccess: function(data) {
+            console.log(data);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
