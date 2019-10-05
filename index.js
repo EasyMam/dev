@@ -26,7 +26,7 @@ var easymam = (function() {
     options.onReturnFromCache = options.onReturnFromCache || noop;
     options.allowAllInitialCallsToPass = options.allowAllInitialCallsToPass || true;
     options.minWaitBetweenCalls = options.minWaitBetweenCalls || 0;
-
+    options.callBackOnCacheUpdated = options.callBackOnCacheUpdated|| noop;
     options.console = options.console || { log: function() {} };
     return options;
   }
@@ -151,6 +151,7 @@ var easymam = (function() {
                      var x = await serviceMethod();
                      hanger.cache[context].hasExecutedAtLeastOnce = true;
                      hanger.cache[context].result = x ||  hanger.cache[context].result;
+                     options.callBackOnCacheUpdated(hanger.cache[context].result);
                      if (hanger.cache[context].isPending) {
                        options.console.log(
                          "EASYMAM - THERE WAS A PENDING CALL SO I WILL MAKE ONE LAST CALL ..." +
