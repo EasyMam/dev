@@ -233,9 +233,15 @@ var easymam = (function() {
           $.ajax({
             url: opt.url,
             beforeSend: function(xhr) {
-              xhr.setRequestHeader(
+            options.bearerAuthHeaderValue &&  xhr.setRequestHeader(
                 "Authorization",
                 "Bearer " + options.bearerAuthHeaderValue
+              );
+              
+            options.basicAuthHeaderValue &&
+              xhr.setRequestHeader(
+                "Authorization",
+                "Basic " + options.basicAuthHeaderValue
               );
             }
           }).always(function(data, textStatus, jqXHR) {
