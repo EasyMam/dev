@@ -10,13 +10,13 @@
       integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
       crossorigin="anonymous"
     ></script>
-    <script src="https://unpkg.com/easymam"></script>
+    <script src="index.js"></script>
 
-    <script src="monitor.js"></script>
+  
 
     <script>
       document.getElementById("myBtn").addEventListener("click", async x => {
-        await monitor.run({
+        await easymam.monitor.run({
           interval: 1000,
           url: "http://www.google.com",
           onSuccess: function(data) {
