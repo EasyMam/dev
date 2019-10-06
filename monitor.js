@@ -25,3 +25,8 @@ var monitor = (function() {
     }
   };
 })();
+
+
+if (typeof module === "object" && typeof module.exports === "object") {
+  module.exports = monitor;
+}
