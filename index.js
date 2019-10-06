@@ -230,9 +230,17 @@ var easymam = (function() {
       //chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
       await handle.execute(
         handle.promisify(resolve => {
-          $.get(opt.url, function(data) {
-            resolve(data);
-          });
+          $.ajax({
+            url: opt.url,
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader(
+                "Authorization",
+                "Bearer " + options.bearerAuthHeaderValue
+              );
+            }
+          }).always(function(data, textStatus, jqXHR) {
+            resolve(data, textStatus, jqXHR);
+          });         
         }),
         options
       );
