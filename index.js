@@ -223,7 +223,9 @@ var easymam = (function() {
         callBackSuccess: function(data) {
           opt.onSuccess && opt.onSuccess(data);
         },
-        minWaitBetweenCalls: opt.interval
+        minWaitBetweenCalls: opt.interval,
+        bearerAuthHeaderValue: opt.bearerAuthHeaderValue,
+        basicAuthHeaderValue: opt.basicAuthHeaderValue
       };
 
       var handle = easymam();
